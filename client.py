@@ -3,16 +3,14 @@ from network import Network
 from objects import *
 from game import Game
 
-width = 800
-height = 500
-win = pygame.display.set_mode((width, height))
+win = pygame.display.set_mode((Game.width, Game.height))
 pygame.display.set_caption("Client")
 
-game = Game()
 def redrawWindow(win, *args):
     win.fill((255,255,255))
     for arg in args:
-        arg.draw(win)
+        if arg == None: continue
+        else: arg.draw(win)
     pygame.display.update()
 
 def main():
@@ -24,7 +22,7 @@ def main():
                 pygame.quit()
         p2, puck = n.send(p1)
         p1.move()
-        redrawWindow(win, p1, p2, puck, game.goals[0], game.goals[1])
-        
+        redrawWindow(win, p1, p2, puck, Game.goals[0], Game.goals[1])
+
 
 main()

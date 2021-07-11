@@ -23,8 +23,8 @@ class Player(Circle):
             self.pos[0] = 400
 
 class Puck(Circle):
-    def __init__(self):
-        Circle.__init__(self, 400, 250, 10, (0,0,0))
+    def __init__(self, x, y, radius, color):
+        Circle.__init__(self, x, y, radius, color)
         self.vel = [0,0]
     
     def move(self):

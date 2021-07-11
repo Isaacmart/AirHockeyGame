@@ -1,11 +1,10 @@
-
 import socket
 from _thread import *
 import pickle
 from objects import *
 from game import Game
 
-server = "192.168.1.128"
+server = "192.168.1.129"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -14,12 +13,14 @@ try:
 except socket.error as e:
     str(e)
 
-s.listen(2)
+s.listen()
 print("Server is running. Waiting for connection...")
 
-game = Game()
+num = 0
+games = []
+gameID = 0
 
-def threaded_client(conn, num):
+def threaded_client(conn, num, game):
     conn.send(pickle.dumps((game.players[num], game.puck)))
     while True:
         try:
@@ -35,8 +36,8 @@ def threaded_client(conn, num):
                 else:
                     reply = game.players[1]
 
-                print("Received: ", data)
-                print("Sending : ", reply)
+                #print("Received: ", data)
+                #print("Sending : ", reply)
 
             game.goalCollision()
             game.playerCollision(num)
@@ -47,11 +48,23 @@ def threaded_client(conn, num):
 
     print("Lost connection")
     conn.close()
+    game.players[num] = None
+    for i in range(len(games)-1): 
+        if(games[i].players == [None, None]): 
+            del games[i]
+            print(True)
 
-num = 0
 while True:
     conn, addr = s.accept()
     print("Connected to:", addr)
 
-    start_new_thread(threaded_client, (conn, num))
+    if(num == 0): games.append(Game())
+    if None in games[-1].players: num = games[-1].players.index(None)
+    else:
+        num = 0
+        games.append(Game())
+        
+    games[-1].players[num] = Game.players[num]
+
+    start_new_thread(threaded_client, (conn, num, games[-1]))
     num += 1
