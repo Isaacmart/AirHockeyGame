@@ -7,11 +7,11 @@ class Game:
     height = 500
     players = [Player(width/4, height/2, 15, (0,0,255), "Left"), Player(width*3/4, height/2, 15, (255,0,0), "Right")]
     goals = [Goal(0, height*3/8, 10, height/4, (0,0,0)), Goal(width-10, height*3/8, 10, height/4, (0,0,0))]
-
+    puck = Puck(width/2, height/2, 10, (0,0,0))
     def __init__(self):
         self.players = [None, None]
         self.goals = Game.goals
-        self.puck = Puck(Game.width/2, Game.height/2, 10, (0,0,0))
+        self.puck = Game.puck
         self.num = 0
     
     def borderCollision(self):
@@ -31,7 +31,8 @@ class Game:
     def goalCollision(self):
         if ((self.puck.pos[0]-self.goals[0].width < self.puck.radius or self.goals[1].pos[0]-self.puck.pos[0] < self.puck.radius) and (self.puck.pos[1] > self.goals[0].pos[1] and self.puck.pos[1] < (self.goals[0].pos[1]+self.goals[0].height))):
             if(self.puck.pos[0] <= 0 or self.puck.pos[0] >= self.width):
-                self.puck.reset(self.puck)
+                del self.puck
+                self.puck = Game.puck
         else:
             self.borderCollision()
     

@@ -36,10 +36,6 @@ class Puck(Circle):
 
         self.vel[0] *= 0.9997
         self.vel[1] *= 0.9997
-    
-    def reset(self, puck):
-        del puck
-        self.__init__()
 
 class Goal():
     def __init__(self, x, y, width, height, color):
